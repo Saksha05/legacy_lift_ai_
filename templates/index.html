@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legacy Lift AI - COBOL to Java Converter</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .upload-section h2 {
+            margin-bottom: 20px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .file-upload-area {
+            border: 3px dashed #667eea;
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 20px;
+        }
+
+        .file-upload-area:hover {
+            border-color: #764ba2;
+            background: #f8f9ff;
+        }
+
+        .file-upload-area.dragover {
+            border-color: #4CAF50;
+            background: #f0fff0;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .api-selector {
+            margin-bottom: 20px;
+        }
+
+        .api-selector label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .api-selector select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e5e9;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .results-header h2 {
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats {
+            display: flex;
+            gap: 15px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .code-container {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .code-header {
+            background: #2d3748;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+        }
+
+        .copy-btn {
+            background: #4a5568;
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .copy-btn:hover {
+            background: #2d3748;
+        }
+
+        pre {
+            margin: 0 !important;
+            max-height: 600px;
+            overflow-y: auto;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #495057;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #17a2b8 0%, #6f42c1 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+            color: #212529;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #f5c6cb;
+            margin-bottom: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .action-buttons {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-code"></i> Legacy Lift AI</h1>
+            <p>Transform your COBOL legacy code into modern Java applications</p>
+        </div>
+
+        <div class="main-content">
+            <div class="upload-section">
+                <h2><i class="fas fa-upload"></i> Upload COBOL File</h2>
+                
+                <div class="file-upload-area" id="fileUploadArea">
+                    <div class="upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <p><strong>Click to browse</strong> or drag and drop your COBOL file here</p>
+                    <p style="font-size: 0.9rem; color: #666; margin-top: 10px;">
+                        Supported formats: .cobol, .cob, .cbl, .txt
+                    </p>
+                </div>
+
+                <input type="file" id="fileInput" accept=".cobol,.cob,.cbl,.txt" style="display: none;">
+
+                <div class="api-selector">
+                    <label for="apiProvider">Choose AI Provider:</label>
+                    <select id="apiProvider">
+                        <option value="groq">Groq (Fast & Reliable)</option>
+                        <option value="huggingface">Hugging Face (Free)</option>
+                        <option value="together">Together AI</option>
+                        <option value="openrouter">OpenRouter</option>
+                    </select>
+                </div>
+
+                <button class="btn" id="convertBtn" disabled>
+                    <i class="fas fa-magic"></i>
+                    Convert to Java
+                </button>
+            </div>
+
+            <div class="results-section">
+                <div class="results-header">
+                    <h2><i class="fas fa-code"></i> Converted Java Code</h2>
+                    <div class="stats" id="conversionStats"></div>
+                </div>
+
+                <div id="loadingIndicator" class="loading">
+                    <div class="spinner"></div>
+                    <p>Converting your COBOL code to Java...</p>
+                </div>
+
+                <div id="errorMessage"></div>
+                <div id="successMessage"></div>
+
+                <div id="codeOutput" style="display: none;">
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span>Generated Java Code</span>
+                            <button class="copy-btn" onclick="copyCode()">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                        <pre><code class="language-java" id="javaCode"></code></pre>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-success" onclick="analyzeCode()">
+                            <i class="fas fa-search"></i>
+                            Quality Analysis
+                        </button>
+                        <button class="btn btn-info" onclick="optimizeCode()">
+                            <i class="fas fa-rocket"></i>
+                            Optimization
+                        </button>
+                        <button class="btn btn-warning" onclick="futureIntegration()">
+                            <i class="fas fa-robot"></i>
+                            Future Agentic Integration
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for displaying analysis results -->
+    <div id="analysisModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Analysis Results</h2>
+                <span class="close" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalBody"></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <script>
+        let currentJavaCode = '';
+
+        // File upload handling
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const convertBtn = document.getElementById('convertBtn');
+
+        fileUploadArea.addEventListener('click', () => fileInput.click());
+        fileUploadArea.addEventListener('dragover', handleDragOver);
+        fileUploadArea.addEventListener('dragleave', handleDragLeave);
+        fileUploadArea.addEventListener('drop', handleDrop);
+        fileInput.addEventListener('change', handleFileSelect);
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        }
+
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                handleFile(file);
+            }
+        }
+
+        function handleFile(file) {
+            const allowedTypes = ['.cobol', '.cob', '.cbl', '.txt'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            
+            if (!allowedTypes.includes(fileExtension)) {
+                showError('Invalid file type. Please upload a COBOL file (.cobol, .cob, .cbl, .txt)');
+                return;
+            }
+
+            if (file.size > 16 * 1024 * 1024) {
+                showError('File too large. Maximum size is 16MB.');
+                return;
+            }
+
+            fileUploadArea.innerHTML = `
+                <div class="upload-icon" style="color: #28a745;">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <p><strong>${file.name}</strong> selected</p>
+                <p style="font-size: 0.9rem; color: #666;">Size: ${(file.size / 1024).toFixed(1)} KB</p>
+            `;
+
+            convertBtn.disabled = false;
+            convertBtn.onclick = () => convertFile(file);
+        }
+
+        function convertFile(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('api_provider', document.getElementById('apiProvider').value);
+
+            showLoading();
+            clearMessages();
+
+            fetch('/api/upload', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showSuccess('Conversion completed successfully!');
+                    displayResults(data);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('Conversion failed: ' + error.message);
+            });
+        }
+
+        function displayResults(data) {
+            currentJavaCode = data.java_code;
+            
+            document.getElementById('javaCode').textContent = data.java_code;
+            document.getElementById('codeOutput').style.display = 'block';
+            
+            // Update stats
+            const stats = data.stats;
+            document.getElementById('conversionStats').innerHTML = `
+                <span><i class="fas fa-layer-group"></i> ${stats.divisions_converted} divisions</span>
+                <span><i class="fas fa-cog"></i> ${stats.api_provider}</span>
+                ${stats.failed_conversions > 0 ? `<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> ${stats.failed_conversions} failed</span>` : ''}
+            `;
+
+            // Trigger syntax highlighting
+            Prism.highlightAll();
+        }
+
+        function copyCode() {
+            navigator.clipboard.writeText(currentJavaCode).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        function analyzeCode() {
+            if (!currentJavaCode) return;
+
+            fetch('/api/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: currentJavaCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showAnalysisModal('Quality Analysis', formatAnalysisResults(data));
+                }
+            })
+            .catch(error => {
+                showError('Analysis failed: ' + error.message);
+            });
+        }
+
+        function optimizeCode() {
+            if (!currentJavaCode) return;
+
+            fetch('/api/optimize', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: currentJavaCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showAnalysisModal('Code Optimization', formatOptimizationResults(data));
+                }
+            })
+            .catch(error => {
+                showError('Optimization failed: ' + error.message);
+            });
+        }
+
+        function futureIntegration() {
+            fetch('/api/future-integration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                showAnalysisModal('Future Agentic Integration', formatFutureIntegrationResults(data));
+            })
+            .catch(error => {
+                showError('Request failed: ' + error.message);
+            });
+        }
+
+        function formatAnalysisResults(data) {
+            let html = '<div>';
+            
+            // Metrics
+            html += '<h3><i class="fas fa-chart-bar"></i> Code Metrics</h3>';
+            html += '<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">';
+            for (const [key, value] of Object.entries(data.metrics)) {
+                html += `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; text-align: center;">
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #667eea;">${value}</div>
+                    <div style="font-size: 0.9rem; color: #666;">${key.replace('_', ' ').toUpperCase()}</div>
+                </div>`;
+            }
+            html += '</div>';
+
+            // Quality checks
+            if (data.quality_checks.length > 0) {
+                html += '<h3><i class="fas fa-check-circle"></i> Quality Checks</h3>';
+                html += '<ul style="margin-bottom: 20px;">';
+                data.quality_checks.forEach(check => {
+                    const icon = check.type === 'good' ? 'fas fa-check text-success' : 
+                                check.type === 'warning' ? 'fas fa-exclamation-triangle text-warning' : 
+                                'fas fa-info-circle text-info';
+                    html += `<li style="margin-bottom: 10px;"><i class="${icon}"></i> ${check.message}</li>`;
+                });
+                html += '</ul>';
+            }
+
+            // Suggestions
+            if (data.suggestions.length > 0) {
+                html += '<h3><i class="fas fa-lightbulb"></i> Suggestions</h3>';
+                html += '<ul>';
+                data.suggestions.forEach(suggestion => {
+                    html += `<li style="margin-bottom: 10px;"><i class="fas fa-arrow-right"></i> ${suggestion}</li>`;
+                });
+                html += '</ul>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function formatOptimizationResults(data) {
+            let html = '<div>';
+            
+            const categories = [
+                { key: 'performance', title: 'Performance Optimizations', icon: 'fas fa-tachometer-alt' },
+                { key: 'readability', title: 'Readability Improvements', icon: 'fas fa-eye' },
+                { key: 'best_practices', title: 'Best Practices', icon: 'fas fa-star' }
+            ];
+
+            categories.forEach(category => {
+                if (data[category.key] && data[category.key].length > 0) {
+                    html += `<h3><i class="${category.icon}"></i> ${category.title}</h3>`;
+                    data[category.key].forEach(item => {
+                        html += `<div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                            <h4 style="color: #667eea; margin-bottom: 8px;">${item.issue}</h4>
+                            <p style="margin-bottom: 8px;"><strong>Suggestion:</strong> ${item.suggestion}</p>
+                            <p style="color: #666; font-size: 0.9rem;"><strong>Impact:</strong> ${item.impact}</p>
+                        </div>`;
+                    });
+                }
+            });
+
+            if (html === '<div>') {
+                html += '<p style="text-align: center; color: #28a745; font-size: 1.2rem;"><i class="fas fa-check-circle"></i> Your code looks great! No major optimizations needed.</p>';
+            }
+
+            html += '</div>';
+            return html;
+        }
+
+        function formatFutureIntegrationResults(data) {
+            let html = `<div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-robot" style="font-size: 3rem; color: #667eea; margin-bottom: 15px;"></i>
+                    <h3>${data.message}</h3>
+                    <p style="color: #666;">${data.description}</p>
+                </div>
+                
+                <h4><i class="fas fa-list"></i> Upcoming Features:</h4>
+                <ul style="margin-bottom: 20px;">`;
+            
+            data.features.forEach(feature => {
+                html += `<li style="margin-bottom: 10px;"><i class="fas fa-arrow-right"></i> ${feature}</li>`;
+            });
+            
+            html += `</ul>
+                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>Status: ${data.status}</strong>
+                </div>
+            </div>`;
+            
+            return html;
+        }
+
+        function showAnalysisModal(title, content) {
+            document.getElementById('modalTitle').textContent = title;
+            document.getElementById('modalBody').innerHTML = content;
+            document.getElementById('analysisModal').style.display = 'block';
+        }
+
+        function closeModal() {
+            document.getElementById('analysisModal').style.display = 'none';
+        }
+
+        // Utility functions
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('codeOutput').style.display = 'none';
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+        }
+
+        function showError(message) {
+            document.getElementById('errorMessage').innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
+        }
+
+        function showSuccess(message) {
+            document.getElementById('successMessage').innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> ${message}</div>`;
+        }
+
+        function clearMessages() {
+            document.getElementById('errorMessage').innerHTML = '';
+            document.getElementById('successMessage').innerHTML = '';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('analysisModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
+</body>
+</html>

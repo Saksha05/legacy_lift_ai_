@@ -1,0 +1,38 @@
+{
+  "source_file": "output/PAYROL00_ast.json",
+  "program_name": "PAYROL00",
+  "base_name": "PAYROL00",
+  "output_folder": "output\\chunks\\PAYROL00",
+  "divisions": {
+    "identification_division": {
+      "chunk_file": "PAYROL00_identification_division.json",
+      "chunk_path": "output\\chunks\\PAYROL00\\PAYROL00_identification_division.json",
+      "complexity": "low",
+      "priority": 2
+    },
+    "data_division": {
+      "chunk_file": "PAYROL00_data_division.json",
+      "chunk_path": "output\\chunks\\PAYROL00\\PAYROL00_data_division.json",
+      "complexity": "high",
+      "priority": 2
+    },
+    "procedure_division": {
+      "chunk_file": "PAYROL00_procedure_division.json",
+      "chunk_path": "output\\chunks\\PAYROL00\\PAYROL00_procedure_division.json",
+      "complexity": "low",
+      "priority": 1
+    }
+  },
+  "conversion_order": [
+    "identification_division",
+    "environment_division",
+    "data_division",
+    "procedure_division"
+  ],
+  "java_conversion_hints": {
+    "identification_division": "Convert to class metadata and package declaration",
+    "environment_division": "Convert to import statements and configuration",
+    "data_division": "Convert to class fields and data structures",
+    "procedure_division": "Convert to methods and main logic"
+  }
+}
