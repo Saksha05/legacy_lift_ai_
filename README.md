@@ -1,2 +1,2 @@
-
-python cobol_ast_parser.py examples/cobol/FILE_IO_TEST.cobol json FILE_IO_TEST_ast.json
+1.   python ast_chunker.py ADDAMT_ast.json
+2.   python  free_api_converter.py output/chunks/ADDAMT/ADDAMT_manifest.json groq
