@@ -1,0 +1,75 @@
+{
+  "division_name": "Data Division",
+  "ast_node": {
+    "type": "data_division",
+    "name": "DATA DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": [
+      {
+        "type": "section",
+        "name": "FILE SECTION",
+        "value": null,
+        "attributes": {},
+        "children": [
+          {
+            "type": "file_description",
+            "name": "",
+            "value": null,
+            "attributes": {
+              "description": "FDINPUT-FILE.\n       01INPUT-RECORD.\n           05INPUT-DATAPICX(80)."
+            },
+            "children": []
+          },
+          {
+            "type": "file_description",
+            "name": "",
+            "value": null,
+            "attributes": {
+              "description": "FDOUTPUT-FILE.\n       01OUTPUT-RECORD.\n           05OUTPUT-DATAPICX(80)."
+            },
+            "children": []
+          }
+        ]
+      },
+      {
+        "type": "working_storage",
+        "name": "WORKING-STORAGE SECTION",
+        "value": null,
+        "attributes": {},
+        "children": [
+          {
+            "type": "data_item",
+            "name": "EOF-FLAG",
+            "value": null,
+            "attributes": {
+              "level": "01",
+              "usage": "DISPLAY",
+              "is_filler": false,
+              "value": "'N'"
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "LINE-COUNT",
+            "value": null,
+            "attributes": {
+              "level": "01",
+              "usage": "DISPLAY",
+              "is_filler": false,
+              "value": "0"
+            },
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "original_file": "output/FILE_IO_TEST_ast.json",
+    "division_type": "data_division",
+    "has_children": true,
+    "attributes_count": 0
+  }
+}

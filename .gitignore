@@ -250,7 +250,7 @@ PERFORM_TEST.py
 .env.*.backup
 
 # Output directories (generated files from transpilation)
-output/
+# output/
 test_output/
 
 # Generated Python files from transpilation

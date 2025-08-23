@@ -1,0 +1,16 @@
+{
+  "division_name": "Identification Division",
+  "ast_node": {
+    "type": "identification_division",
+    "name": "IDENTIFICATION DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": []
+  },
+  "metadata": {
+    "original_file": "output/ADDAMT_ast.json",
+    "division_type": "identification_division",
+    "has_children": false,
+    "attributes_count": 0
+  }
+}

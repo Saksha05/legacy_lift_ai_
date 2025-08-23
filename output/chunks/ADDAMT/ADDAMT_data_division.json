@@ -1,0 +1,125 @@
+{
+  "division_name": "Data Division",
+  "ast_node": {
+    "type": "data_division",
+    "name": "DATA DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": [
+      {
+        "type": "working_storage",
+        "name": "WORKING-STORAGE SECTION",
+        "value": null,
+        "attributes": {},
+        "children": [
+          {
+            "type": "data_item",
+            "name": "KEYED-INPUT.",
+            "value": null,
+            "attributes": {
+              "level": "01",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "CUST-NO-IN",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "AMT1-IN",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "AMT2-IN",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "AMT3-IN",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "DISPLAYED-OUTPUT.",
+            "value": null,
+            "attributes": {
+              "level": "01",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "CUST-NO-OUT",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "TOTAL-OUT",
+            "value": null,
+            "attributes": {
+              "level": "05",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "MORE-DATA",
+            "value": null,
+            "attributes": {
+              "level": "01",
+              "usage": "DISPLAY",
+              "is_filler": false,
+              "value": "'YES'"
+            },
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "original_file": "output/ADDAMT_ast.json",
+    "division_type": "data_division",
+    "has_children": true,
+    "attributes_count": 0
+  }
+}
