@@ -1,0 +1,27 @@
+{
+  "division_name": "Environment Division",
+  "ast_node": {
+    "type": "environment_division",
+    "name": "ENVIRONMENT DIVISION",
+    "value": null,
+    "attributes": {
+      "file_control": [
+        {
+          "file_name": "",
+          "assign_to": ""
+        },
+        {
+          "file_name": "",
+          "assign_to": ""
+        }
+      ]
+    },
+    "children": []
+  },
+  "metadata": {
+    "original_file": "output/FILE_IO_TEST_ast.json",
+    "division_type": "environment_division",
+    "has_children": false,
+    "attributes_count": 1
+  }
+}

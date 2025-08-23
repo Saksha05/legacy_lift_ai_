@@ -1,0 +1,355 @@
+{
+  "division_name": "Procedure Division",
+  "ast_node": {
+    "type": "procedure_division",
+    "name": "PROCEDURE DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": [
+      {
+        "type": "paragraph",
+        "name": "100-MAIN",
+        "value": null,
+        "attributes": {},
+        "children": [
+          {
+            "type": "statement",
+            "name": "PERFORMUNTILMORE-DATA='NO 'DISPLAY'ENTER NAME     ",
+            "value": null,
+            "attributes": {
+              "full_text": "PERFORMUNTILMORE-DATA='NO 'DISPLAY'ENTER NAME       (15 CHARACTERS)'ACCEPTCUST-NO-INDISPLAY'Enter amount of first purchase (5 digits)'ACCEPTAMT1-INDISPLAY'Enter amount of second purchase (5 digits)'ACCEPTAMT2-INDISPLAY'Enter amount of third purchase (5 digits)'ACCEPTAMT3-INMOVECUST-NO-INTOCUST-NO-OUTADDAMT1-INAMT2-INAMT3-INGIVINGTOTAL-OUTDISPLAYCUST-NO-OUT'Total Amount = 'TOTAL-OUTDISPLAY'MORE INPUT DATA (YES/NO)?'ACCEPTMORE-DATAINSPECTMORE-DATACONVERTING'noyes'to'NOYES'END-PERFORM",
+              "statement_type": "PERFORM",
+              "java_equivalent": "while (condition) { /* loop body */ }",
+              "cobol_semantics": {
+                "operation_type": "PERFORM",
+                "is_data_movement": false,
+                "is_control_flow": true,
+                "is_io_operation": false,
+                "requires_loop_conversion": true,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": [
+              {
+                "type": "condition",
+                "name": "until_condition",
+                "value": null,
+                "attributes": {
+                  "raw": "PERFORMUNTILMORE-DATA='NO '"
+                },
+                "children": []
+              }
+            ]
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAY'ENTER NAME       (15 CHARACTERS)'",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAY'ENTER NAME       (15 CHARACTERS)'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ACCEPTCUST-NO-IN",
+            "value": null,
+            "attributes": {
+              "full_text": "ACCEPTCUST-NO-IN",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAY'Enter amount of first purchase (5 digits)'",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAY'Enter amount of first purchase (5 digits)'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ACCEPTAMT1-IN",
+            "value": null,
+            "attributes": {
+              "full_text": "ACCEPTAMT1-IN",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAY'Enter amount of second purchase (5 digits)",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAY'Enter amount of second purchase (5 digits)'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ACCEPTAMT2-IN",
+            "value": null,
+            "attributes": {
+              "full_text": "ACCEPTAMT2-IN",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAY'Enter amount of third purchase (5 digits)'",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAY'Enter amount of third purchase (5 digits)'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ACCEPTAMT3-IN",
+            "value": null,
+            "attributes": {
+              "full_text": "ACCEPTAMT3-IN",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "MOVECUST-NO-INTOCUST-NO-OUT",
+            "value": null,
+            "attributes": {
+              "full_text": "MOVECUST-NO-INTOCUST-NO-OUT",
+              "statement_type": "MOVE",
+              "java_equivalent": "// MOVE statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "MOVE",
+                "is_data_movement": true,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ADDAMT1-INAMT2-INAMT3-INGIVINGTOTAL-OUT",
+            "value": null,
+            "attributes": {
+              "full_text": "ADDAMT1-INAMT2-INAMT3-INGIVINGTOTAL-OUT",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAYCUST-NO-OUT'Total Amount = 'TOTAL-OUT",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAYCUST-NO-OUT'Total Amount = 'TOTAL-OUT",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "DISPLAY'MORE INPUT DATA (YES/NO)?'",
+            "value": null,
+            "attributes": {
+              "full_text": "DISPLAY'MORE INPUT DATA (YES/NO)?'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "ACCEPTMORE-DATA",
+            "value": null,
+            "attributes": {
+              "full_text": "ACCEPTMORE-DATA",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "INSPECTMORE-DATACONVERTING'noyes'to'NOYES'",
+            "value": null,
+            "attributes": {
+              "full_text": "INSPECTMORE-DATACONVERTING'noyes'to'NOYES'",
+              "statement_type": "OTHER",
+              "java_equivalent": "// OTHER statement conversion needed",
+              "cobol_semantics": {
+                "operation_type": "OTHER",
+                "is_data_movement": false,
+                "is_control_flow": false,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          },
+          {
+            "type": "statement",
+            "name": "GOBACK",
+            "value": null,
+            "attributes": {
+              "full_text": "GOBACK",
+              "statement_type": "GOBACK",
+              "java_equivalent": "return;",
+              "cobol_semantics": {
+                "operation_type": "GOBACK",
+                "is_data_movement": false,
+                "is_control_flow": true,
+                "is_io_operation": false,
+                "requires_loop_conversion": false,
+                "requires_method_call": false
+              },
+              "referenced_identifiers": []
+            },
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "original_file": "output/ADDAMT_ast.json",
+    "division_type": "procedure_division",
+    "has_children": true,
+    "attributes_count": 0
+  }
+}
