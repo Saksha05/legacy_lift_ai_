@@ -1,0 +1,91 @@
+{
+  "division_name": "Data Division",
+  "ast_node": {
+    "type": "data_division",
+    "name": "DATA DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": [
+      {
+        "type": "working_storage",
+        "name": "WORKING-STORAGE SECTION",
+        "value": null,
+        "attributes": {},
+        "children": [
+          {
+            "type": "data_item",
+            "name": "WHO",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "WHERE",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "WHY",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "RATE",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "HOURS",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          },
+          {
+            "type": "data_item",
+            "name": "GROSS-PAY",
+            "value": null,
+            "attributes": {
+              "level": "77",
+              "usage": "DISPLAY",
+              "is_filler": false
+            },
+            "children": []
+          }
+        ]
+      }
+    ]
+  },
+  "metadata": {
+    "original_file": "output/PAYROL00_ast.json",
+    "division_type": "data_division",
+    "has_children": true,
+    "attributes_count": 0
+  }
+}

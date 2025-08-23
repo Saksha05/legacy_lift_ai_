@@ -1,0 +1,681 @@
+{
+  "type": "program",
+  "name": "COBOL_PROGRAM",
+  "value": null,
+  "attributes": {},
+  "children": [
+    {
+      "type": "identification_division",
+      "name": "IDENTIFICATION DIVISION",
+      "value": null,
+      "attributes": {
+        "program_id": "COMPLEX-SAMPLE"
+      },
+      "children": []
+    },
+    {
+      "type": "environment_division",
+      "name": "ENVIRONMENT DIVISION",
+      "value": null,
+      "attributes": {
+        "file_control": [
+          {
+            "file_name": "",
+            "assign_to": ""
+          },
+          {
+            "file_name": "",
+            "assign_to": ""
+          },
+          {
+            "file_name": "",
+            "assign_to": ""
+          }
+        ]
+      },
+      "children": []
+    },
+    {
+      "type": "data_division",
+      "name": "DATA DIVISION",
+      "value": null,
+      "attributes": {},
+      "children": [
+        {
+          "type": "section",
+          "name": "FILE SECTION",
+          "value": null,
+          "attributes": {},
+          "children": [
+            {
+              "type": "file_description",
+              "name": "",
+              "value": null,
+              "attributes": {
+                "description": "FDINPUT-FILE.\n       01INPUT-RECORD.\n          05STUDENT-IDPICX(05).\n          05STUDENT-NAMEPICX(20).\n          05COURSE-CODEPICX(05).\n          05SCOREPIC9(03)."
+              },
+              "children": []
+            },
+            {
+              "type": "file_description",
+              "name": "",
+              "value": null,
+              "attributes": {
+                "description": "FDOUTPUT-FILE.\n       01OUTPUT-RECORDPICX(80)."
+              },
+              "children": []
+            },
+            {
+              "type": "file_description",
+              "name": "",
+              "value": null,
+              "attributes": {
+                "description": "FDERROR-FILE.\n       01ERROR-RECORDPICX(80)."
+              },
+              "children": []
+            }
+          ]
+        },
+        {
+          "type": "working_storage",
+          "name": "WORKING-STORAGE SECTION",
+          "value": null,
+          "attributes": {},
+          "children": [
+            {
+              "type": "data_item",
+              "name": "WS-STUDENT-TABLE.",
+              "value": null,
+              "attributes": {
+                "level": "01",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-STUDENTOCCURS10TIMESINDEXEDBYIDX.",
+              "value": null,
+              "attributes": {
+                "level": "05",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-STUDENT-ID",
+              "value": null,
+              "attributes": {
+                "level": "10",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-STUDENT-NAME",
+              "value": null,
+              "attributes": {
+                "level": "10",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-COURSE",
+              "value": null,
+              "attributes": {
+                "level": "10",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-SCORE",
+              "value": null,
+              "attributes": {
+                "level": "10",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-COUNT",
+              "value": null,
+              "attributes": {
+                "level": "01",
+                "usage": "DISPLAY",
+                "is_filler": false,
+                "value": "ZERO"
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "WS-AVERAGE",
+              "value": null,
+              "attributes": {
+                "level": "01",
+                "usage": "DISPLAY",
+                "is_filler": false,
+                "value": "ZERO"
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "SWITCHES.",
+              "value": null,
+              "attributes": {
+                "level": "01",
+                "usage": "DISPLAY",
+                "is_filler": false
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "END-OF-FILE",
+              "value": null,
+              "attributes": {
+                "level": "05",
+                "usage": "DISPLAY",
+                "is_filler": false,
+                "value": "\"N\""
+              },
+              "children": []
+            },
+            {
+              "type": "data_item",
+              "name": "EOF",
+              "value": null,
+              "attributes": {
+                "level": "88",
+                "usage": "DISPLAY",
+                "is_filler": false,
+                "value": "\"Y\""
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "type": "procedure_division",
+      "name": "PROCEDURE DIVISION",
+      "value": null,
+      "attributes": {},
+      "children": [
+        {
+          "type": "paragraph",
+          "name": "MAIN-LOGIC",
+          "value": null,
+          "attributes": {},
+          "children": [
+            {
+              "type": "statement",
+              "name": "OPENINPUTINPUT-FILEOUTPUTOUTPUT-FILEOUTPUTERROR-FI",
+              "value": null,
+              "attributes": {
+                "full_text": "OPENINPUTINPUT-FILEOUTPUTOUTPUT-FILEOUTPUTERROR-FILE",
+                "statement_type": "OPEN",
+                "java_equivalent": "// Initialize file streams",
+                "cobol_semantics": {
+                  "operation_type": "OPEN",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "PERFORMUNTILEOFREADINPUT-FILEINTOINPUT-RECORDATEND",
+              "value": null,
+              "attributes": {
+                "full_text": "PERFORMUNTILEOFREADINPUT-FILEINTOINPUT-RECORDATENDSETEOFTOTRUENOTATENDADD1TOWS-COUNTMOVESTUDENT-IDTOWS-STUDENT-ID(IDX)MOVESTUDENT-NAMETOWS-STUDENT-NAME(IDX)MOVECOURSE-CODETOWS-COURSE(IDX)MOVESCORETOWS-SCORE(IDX)WRITEOUTPUT-RECORDFROMINPUT-RECORDEND-READEND-PERFORM",
+                "statement_type": "PERFORM",
+                "java_equivalent": "while (condition) { /* loop body */ }",
+                "cobol_semantics": {
+                  "operation_type": "PERFORM",
+                  "is_data_movement": false,
+                  "is_control_flow": true,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": true,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": [
+                {
+                  "type": "condition",
+                  "name": "until_condition",
+                  "value": null,
+                  "attributes": {
+                    "raw": "PERFORMUNTILEOFREADINPUT-FILEINTOINPUT-RECORDATENDSETEOFTOTRUENOTATENDADD1TOWS-COUNTMOVESTUDENT-IDTOWS-STUDENT-ID(IDX)MOVESTUDENT-NAMETOWS-STUDENT-NAME(IDX)MOVECOURSE-CODETOWS-COURSE(IDX)MOVESCORETOWS-SCORE(IDX)WRITEOUTPUT-RECORDFROMINPUT-RECORDEND-READEND-"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "statement",
+              "name": "READINPUT-FILEINTOINPUT-RECORDATENDSETEOFTOTRUENOT",
+              "value": null,
+              "attributes": {
+                "full_text": "READINPUT-FILEINTOINPUT-RECORDATENDSETEOFTOTRUENOTATENDADD1TOWS-COUNTMOVESTUDENT-IDTOWS-STUDENT-ID(IDX)MOVESTUDENT-NAMETOWS-STUDENT-NAME(IDX)MOVECOURSE-CODETOWS-COURSE(IDX)MOVESCORETOWS-SCORE(IDX)WRITEOUTPUT-RECORDFROMINPUT-RECORDEND-READ",
+                "statement_type": "READ",
+                "java_equivalent": "// File I/O - use BufferedReader or similar",
+                "cobol_semantics": {
+                  "operation_type": "READ",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "SETEOFTOTRUE",
+              "value": null,
+              "attributes": {
+                "full_text": "SETEOFTOTRUE",
+                "statement_type": "OTHER",
+                "java_equivalent": "// OTHER statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "OTHER",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "ADD1TOWS-COUNT",
+              "value": null,
+              "attributes": {
+                "full_text": "ADD1TOWS-COUNT",
+                "statement_type": "OTHER",
+                "java_equivalent": "// OTHER statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "OTHER",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVESTUDENT-IDTOWS-STUDENT-ID(IDX)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVESTUDENT-IDTOWS-STUDENT-ID(IDX)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVESTUDENT-NAMETOWS-STUDENT-NAME(IDX)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVESTUDENT-NAMETOWS-STUDENT-NAME(IDX)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVECOURSE-CODETOWS-COURSE(IDX)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVECOURSE-CODETOWS-COURSE(IDX)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVESCORETOWS-SCORE(IDX)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVESCORETOWS-SCORE(IDX)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "WRITEOUTPUT-RECORDFROMINPUT-RECORD",
+              "value": null,
+              "attributes": {
+                "full_text": "WRITEOUTPUT-RECORDFROMINPUT-RECORD",
+                "statement_type": "WRITE",
+                "java_equivalent": "// File I/O - use PrintWriter or similar",
+                "cobol_semantics": {
+                  "operation_type": "WRITE",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "IFWS-COUNT>0PERFORMVARYINGIDXFROM1BY1UNTILIDX>WS-C",
+              "value": null,
+              "attributes": {
+                "full_text": "IFWS-COUNT>0PERFORMVARYINGIDXFROM1BY1UNTILIDX>WS-COUNTADDWS-SCORE(IDX)TOWS-AVERAGEEND-PERFORMDIVIDEWS-AVERAGEBYWS-COUNTGIVINGWS-AVERAGEMOVE\"AVERAGE SCORE: \"TOOUTPUT-RECORD(1:15)MOVEWS-AVERAGETOOUTPUT-RECORD(16:05)WRITEOUTPUT-RECORDELSEMOVE\"NO RECORDS PROCESSED\"TOERROR-RECORDWRITEERROR-RECORDEND-IF",
+                "statement_type": "IF",
+                "java_equivalent": "if (condition) { /* statements */ }",
+                "cobol_semantics": {
+                  "operation_type": "IF",
+                  "is_data_movement": false,
+                  "is_control_flow": true,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": true,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": [
+                {
+                  "type": "condition",
+                  "name": "condition",
+                  "value": null,
+                  "attributes": {
+                    "raw": ""
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "statement",
+              "name": "PERFORMVARYINGIDXFROM1BY1UNTILIDX>WS-COUNTADDWS-SC",
+              "value": null,
+              "attributes": {
+                "full_text": "PERFORMVARYINGIDXFROM1BY1UNTILIDX>WS-COUNTADDWS-SCORE(IDX)TOWS-AVERAGEEND-PERFORM",
+                "statement_type": "PERFORM",
+                "java_equivalent": "while (condition) { /* loop body */ }",
+                "cobol_semantics": {
+                  "operation_type": "PERFORM",
+                  "is_data_movement": false,
+                  "is_control_flow": true,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": true,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": [
+                {
+                  "type": "condition",
+                  "name": "until_condition",
+                  "value": null,
+                  "attributes": {
+                    "raw": "PERFORMVARYINGIDXFROM1BY1UNTILIDX>WS-COUNTADDWS-SCORE(IDX)TOWS-AVERAGEEND-"
+                  },
+                  "children": []
+                }
+              ]
+            },
+            {
+              "type": "statement",
+              "name": "ADDWS-SCORE(IDX)TOWS-AVERAGE",
+              "value": null,
+              "attributes": {
+                "full_text": "ADDWS-SCORE(IDX)TOWS-AVERAGE",
+                "statement_type": "OTHER",
+                "java_equivalent": "// OTHER statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "OTHER",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "DIVIDEWS-AVERAGEBYWS-COUNTGIVINGWS-AVERAGE",
+              "value": null,
+              "attributes": {
+                "full_text": "DIVIDEWS-AVERAGEBYWS-COUNTGIVINGWS-AVERAGE",
+                "statement_type": "OTHER",
+                "java_equivalent": "// OTHER statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "OTHER",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVE\"AVERAGE SCORE: \"TOOUTPUT-RECORD(1:15)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVE\"AVERAGE SCORE: \"TOOUTPUT-RECORD(1:15)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVEWS-AVERAGETOOUTPUT-RECORD(16:05)",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVEWS-AVERAGETOOUTPUT-RECORD(16:05)",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "WRITEOUTPUT-RECORD",
+              "value": null,
+              "attributes": {
+                "full_text": "WRITEOUTPUT-RECORD",
+                "statement_type": "WRITE",
+                "java_equivalent": "// File I/O - use PrintWriter or similar",
+                "cobol_semantics": {
+                  "operation_type": "WRITE",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "MOVE\"NO RECORDS PROCESSED\"TOERROR-RECORD",
+              "value": null,
+              "attributes": {
+                "full_text": "MOVE\"NO RECORDS PROCESSED\"TOERROR-RECORD",
+                "statement_type": "MOVE",
+                "java_equivalent": "// MOVE statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "MOVE",
+                  "is_data_movement": true,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "WRITEERROR-RECORD",
+              "value": null,
+              "attributes": {
+                "full_text": "WRITEERROR-RECORD",
+                "statement_type": "WRITE",
+                "java_equivalent": "// File I/O - use PrintWriter or similar",
+                "cobol_semantics": {
+                  "operation_type": "WRITE",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "CLOSEINPUT-FILEOUTPUT-FILEERROR-FILE",
+              "value": null,
+              "attributes": {
+                "full_text": "CLOSEINPUT-FILEOUTPUT-FILEERROR-FILE",
+                "statement_type": "CLOSE",
+                "java_equivalent": "// Close file streams",
+                "cobol_semantics": {
+                  "operation_type": "CLOSE",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": true,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            },
+            {
+              "type": "statement",
+              "name": "STOPRUN",
+              "value": null,
+              "attributes": {
+                "full_text": "STOPRUN",
+                "statement_type": "OTHER",
+                "java_equivalent": "// OTHER statement conversion needed",
+                "cobol_semantics": {
+                  "operation_type": "OTHER",
+                  "is_data_movement": false,
+                  "is_control_flow": false,
+                  "is_io_operation": false,
+                  "requires_loop_conversion": false,
+                  "requires_method_call": false
+                },
+                "referenced_identifiers": []
+              },
+              "children": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
