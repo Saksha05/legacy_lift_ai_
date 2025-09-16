@@ -36,11 +36,10 @@ class FreeAPIConverter:
                 "headers": {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {},
                 "model": "microsoft/DialoGPT-medium"
             },
-            "groq": {
-                "url": "https://api.groq.com/openai/v1/chat/completions",
-                "headers": {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"} if self.api_key else {},
-                "model": "llama3-8b-8192"
-            },
+<<<<<<< HEAD
+=======
+ 
+>>>>>>> parent of 4a82710 (monaco editor)
             "together": {
                 "url": "https://api.together.xyz/v1/chat/completions",
                 "headers": {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"} if self.api_key else {},
@@ -285,40 +284,6 @@ public static void main(String[] args) {
             print(f"Hugging Face API error: {e}")
             return None
     
-    def call_groq_api(self, prompt: str) -> Optional[str]:
-        """Call Groq API"""
-        config = self.api_configs["groq"]
-        
-        payload = {
-            "messages": [
-                {"role": "system", "content": "You are a COBOL to Java conversion expert."},
-                {"role": "user", "content": prompt}
-            ],
-            "model": config["model"],
-            "temperature": 0.1,
-            "max_tokens": 2000
-        }
-        
-        try:
-            response = requests.post(
-                config["url"],
-                headers=config["headers"],
-                json=payload,
-                timeout=60,
-                verify=False  # Bypass SSL verification
-            )
-            
-            if response.status_code == 200:
-                result = response.json()
-                return result["choices"][0]["message"]["content"]
-            else:
-                print(f"Groq API error: {response.status_code}")
-                print(f"Response: {response.text}")
-                return None
-                
-        except Exception as e:
-            print(f"Groq API error: {e}")
-            return None
     
     def call_together_api(self, prompt: str) -> Optional[str]:
         """Call Together AI API"""
@@ -390,8 +355,6 @@ public static void main(String[] args) {
         """Call the selected API provider"""
         if self.api_provider == "huggingface":
             return self.call_huggingface_api(prompt)
-        elif self.api_provider == "groq":
-            return self.call_groq_api(prompt)
         elif self.api_provider == "together":
             return self.call_together_api(prompt)
         elif self.api_provider == "openrouter":
@@ -512,13 +475,17 @@ def main():
     import sys
     
     print("🆓 Free API LLM Converter")
+<<<<<<< HEAD
+    print("Available providers: huggingface, together, openrouter, gemini")
+=======
     print("Available providers: huggingface, groq, together, openrouter")
+>>>>>>> parent of 4a82710 (monaco editor)
     print("Note: Some providers require API keys for better performance\n")
     
     if len(sys.argv) < 2:
         print("Usage: python free_api_converter.py <manifest_file> [provider]")
-        print("Example: python free_api_converter.py output/chunks/FILE_IO_TEST_ast_manifest.json groq")
-        print("Note: Set environment variable GROQ_API_KEY, TOGETHER_API_KEY, etc. for API keys")
+        print("Example: python free_api_converter.py output/chunks/FILE_IO_TEST_ast_manifest.json gemini")
+        print("Note: Set environment variables as needed (e.g., GEMINI_API_KEY, TOGETHER_API_KEY)")
         sys.exit(1)
     
     manifest_file = sys.argv[1]
