@@ -1,0 +1,32 @@
+{
+  "source_file": "output/HELLO_ast.json",
+  "program_name": "HELLO",
+  "base_name": "HELLO",
+  "output_folder": "output\\chunks\\HELLO",
+  "divisions": {
+    "identification_division": {
+      "chunk_file": "HELLO_identification_division.json",
+      "chunk_path": "output\\chunks\\HELLO\\HELLO_identification_division.json",
+      "complexity": "low",
+      "priority": 2
+    },
+    "procedure_division": {
+      "chunk_file": "HELLO_procedure_division.json",
+      "chunk_path": "output\\chunks\\HELLO\\HELLO_procedure_division.json",
+      "complexity": "low",
+      "priority": 1
+    }
+  },
+  "conversion_order": [
+    "identification_division",
+    "environment_division",
+    "data_division",
+    "procedure_division"
+  ],
+  "java_conversion_hints": {
+    "identification_division": "Convert to class metadata and package declaration",
+    "environment_division": "Convert to import statements and configuration",
+    "data_division": "Convert to class fields and data structures",
+    "procedure_division": "Convert to methods and main logic"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "division_name": "Procedure Division",
+  "ast_node": {
+    "type": "procedure_division",
+    "name": "PROCEDURE DIVISION",
+    "value": null,
+    "attributes": {},
+    "children": []
+  },
+  "metadata": {
+    "original_file": "output/HELLO_ast.json",
+    "division_type": "procedure_division",
+    "has_children": false,
+    "attributes_count": 0
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "type": "program",
+  "name": "COBOL_PROGRAM",
+  "value": null,
+  "attributes": {},
+  "children": [
+    {
+      "type": "identification_division",
+      "name": "IDENTIFICATION DIVISION",
+      "value": null,
+      "attributes": {
+        "program_id": "HELLO"
+      },
+      "children": []
+    },
+    {
+      "type": "procedure_division",
+      "name": "PROCEDURE DIVISION",
+      "value": null,
+      "attributes": {},
+      "children": []
+    }
+  ]
+}

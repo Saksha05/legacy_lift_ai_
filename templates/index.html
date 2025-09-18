@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Legacy Lift AI - COBOL to Java Converter</title>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         * {
@@ -164,20 +163,26 @@
             color: #666;
         }
 
-        .code-container {
+        .monaco-container {
             position: relative;
             border-radius: 10px;
             overflow: hidden;
             margin-bottom: 20px;
+            border: 1px solid #e1e5e9;
         }
 
-        .code-header {
+        .monaco-header {
             background: #2d3748;
             color: white;
             padding: 15px 20px;
             display: flex;
-            justify-content: between;
+            justify-content: space-between;
             align-items: center;
+        }
+
+        .monaco-editor {
+            height: 600px;
+            width: 100%;
         }
 
         .copy-btn {
@@ -192,12 +197,6 @@
 
         .copy-btn:hover {
             background: #2d3748;
-        }
-
-        pre {
-            margin: 0 !important;
-            max-height: 600px;
-            overflow-y: auto;
         }
 
         .action-buttons {
@@ -282,12 +281,12 @@
 
         .modal-content {
             background-color: white;
-            margin: 5% auto;
+            margin: 2% auto;
             padding: 30px;
             border-radius: 15px;
-            width: 80%;
-            max-width: 800px;
-            max-height: 80vh;
+            width: 90%;
+            max-width: 1000px;
+            max-height: 90vh;
             overflow-y: auto;
         }
 
@@ -311,6 +310,100 @@
             color: #000;
         }
 
+        .input-section {
+            margin-bottom: 20px;
+        }
+
+        .input-section h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .monaco-input-container {
+            border: 1px solid #e1e5e9;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .monaco-input-header {
+            background: #f8f9fa;
+            padding: 10px 15px;
+            border-bottom: 1px solid #e1e5e9;
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .monaco-input-editor {
+            height: 200px;
+            width: 100%;
+        }
+
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: white;
+            animation: move 6s linear infinite;
+        }
+
+        @keyframes move {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(100%, 100%); }
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            color: white;
+            animation: show 0.5s ease;
+            transition: transform 0.5s ease;
+        }
+
+        .notification.show {
+            transform: translateY(0);
+        }
+
+        .notification.info {
+            background: #17a2b8;
+        }
+
+        .notification.success {
+            background: #28a745;
+        }
+
+        .notification.error {
+            background: #dc3545;
+        }
+
+        .progress-container {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .progress-bar {
+            height: 10px;
+            background: #667eea;
+            border-radius: 8px;
+        }
+
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
@@ -323,10 +416,17 @@
             .action-buttons {
                 justify-content: center;
             }
+
+            .monaco-editor {
+                height: 400px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Animated background particles -->
+    <div class="particles" id="particles"></div>
+    
     <div class="container">
         <div class="header">
             <h1><i class="fas fa-code"></i> Legacy Lift AI</h1>
@@ -352,15 +452,15 @@
                 <div class="api-selector">
                     <label for="apiProvider">Choose AI Provider:</label>
                     <select id="apiProvider">
-<<<<<<< HEAD
                         <option value="gemini">Google Gemini (Recommended - High Limits)</option>
-=======
-                        <option value="groq">Groq (Fast & Reliable)</option>
->>>>>>> parent of 4a82710 (monaco editor)
                         <option value="huggingface">Hugging Face (Free)</option>
                         <option value="together">Together AI</option>
                         <option value="openrouter">OpenRouter</option>
                     </select>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar" id="progressBar" style="width: 0%"></div>
                 </div>
 
                 <button class="btn" id="convertBtn" disabled>
@@ -384,26 +484,38 @@
                 <div id="successMessage"></div>
 
                 <div id="codeOutput" style="display: none;">
-                    <div class="code-container">
-                        <div class="code-header">
-                            <span>Generated Java Code</span>
+                    <div class="monaco-container">
+                        <div class="monaco-header">
+                            <span><i class="fas fa-file-code"></i> Generated Java Code</span>
                             <button class="copy-btn" onclick="copyCode()">
                                 <i class="fas fa-copy"></i> Copy
                             </button>
                         </div>
-                        <pre><code class="language-java" id="javaCode"></code></pre>
+                        <div id="javaCodeEditor" class="monaco-editor"></div>
                     </div>
 
                     <div class="action-buttons">
-                        <button class="btn btn-success" onclick="analyzeCode()">
+                        <button class="btn btn-warning" onclick="cleanupCode()">
+                            <i class="fas fa-broom"></i>
+                            Clean Up Java
+                        </button>
+                        <button class="btn btn-success" onclick="compileCode()">
+                            <i class="fas fa-hammer"></i>
+                            Compile Java
+                        </button>
+                        <button class="btn btn-info" onclick="runCode()">
+                            <i class="fas fa-play"></i>
+                            Run Java
+                        </button>
+                        <button class="btn btn-secondary" onclick="analyzeCode()">
                             <i class="fas fa-search"></i>
                             Quality Analysis
                         </button>
-                        <button class="btn btn-info" onclick="optimizeCode()">
+                        <button class="btn btn-secondary" onclick="optimizeCode()">
                             <i class="fas fa-rocket"></i>
                             Optimization
                         </button>
-                        <button class="btn btn-warning" onclick="futureIntegration()">
+                        <button class="btn btn-secondary" onclick="futureIntegration()">
                             <i class="fas fa-robot"></i>
                             Future Agentic Integration
                         </button>
@@ -424,10 +536,148 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+    <!-- Modal for program input -->
+    <div id="inputModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-keyboard"></i> Program Input</h2>
+                <span class="close" onclick="closeInputModal()">&times;</span>
+            </div>
+            <div class="input-section">
+                <h4><i class="fas fa-terminal"></i> Enter Program Input:</h4>
+                <div class="monaco-input-container">
+                    <div class="monaco-input-header">
+                        <i class="fas fa-edit"></i> Input Data (one value per line)
+                    </div>
+                    <div id="inputEditor" class="monaco-input-editor"></div>
+                </div>
+            </div>
+            <div style="text-align: right; margin-top: 20px;">
+                <button class="btn btn-secondary" onclick="closeInputModal()" style="margin-right: 10px;">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="btn btn-info" onclick="executeWithInput()">
+                    <i class="fas fa-play"></i> Run Program
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Monaco Editor CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs/loader.min.js"></script>
     <script>
         let currentJavaCode = '';
+        let javaEditor = null;
+        let inputEditor = null;
+
+        // Create animated particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            for (let i = 0; i < 50; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // Enhanced notification system
+        function showNotification(message, type = 'info') {
+            const notification = document.createElement('div');
+            notification.className = `notification ${type}`;
+            notification.innerHTML = `<i class="fas fa-${type === 'success' ? 'check' : type === 'error' ? 'times' : 'info'}-circle"></i> ${message}`;
+            document.body.appendChild(notification);
+            
+            setTimeout(() => notification.classList.add('show'), 100);
+            setTimeout(() => {
+                notification.classList.remove('show');
+                setTimeout(() => document.body.removeChild(notification), 400);
+            }, 3000);
+        }
+
+        // Progress bar animation
+        function animateProgress(targetWidth) {
+            const progressBar = document.getElementById('progressBar');
+            const progressContainer = document.getElementById('progressContainer');
+            progressContainer.style.display = 'block';
+            
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= targetWidth) {
+                    clearInterval(interval);
+                    if (targetWidth === 100) {
+                        setTimeout(() => {
+                            progressContainer.style.display = 'none';
+                            progressBar.style.width = '0%';
+                        }, 1000);
+                    }
+                } else {
+                    width += 2;
+                    progressBar.style.width = width + '%';
+                }
+            }, 50);
+        }
+
+        // Initialize Monaco Editor
+        require.config({ paths: { vs: 'https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.44.0/min/vs' } });
+        require(['vs/editor/editor.main'], function () {
+            javaEditor = monaco.editor.create(document.getElementById('javaCodeEditor'), {
+                value: '// Your converted Java code will appear here...',
+                language: 'java',
+                theme: 'vs-dark',
+                automaticLayout: true,
+                fontSize: 14,
+                minimap: { enabled: true },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                formatOnPaste: true,
+                formatOnType: true
+            });
+
+            inputEditor = monaco.editor.create(document.getElementById('inputEditor'), {
+                value: 'John Doe\n1000\n2000\n3000\nNO',
+                language: 'plaintext',
+                theme: 'vs',
+                automaticLayout: true,
+                fontSize: 14,
+                minimap: { enabled: false },
+                scrollBeyondLastLine: false,
+                wordWrap: 'on',
+                lineNumbers: 'on'
+            });
+
+            javaEditor.onDidChangeModelContent(() => {
+                currentJavaCode = javaEditor.getValue();
+            });
+        });
+
+        // Initialize particles on load
+        document.addEventListener('DOMContentLoaded', createParticles);
+
+        // Enhanced showSuccess and showError functions
+        function showSuccess(message) {
+            showNotification(message, 'success');
+            document.getElementById('successMessage').innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> ${message}</div>`;
+        }
+
+        function showError(message) {
+            showNotification(message, 'error');
+            document.getElementById('errorMessage').innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
+        }
+
+        // Enhanced loading with progress
+        function showLoading() {
+            document.getElementById('loadingIndicator').style.display = 'block';
+            document.getElementById('codeOutput').style.display = 'none';
+            animateProgress(90);
+        }
+
+        function hideLoading() {
+            document.getElementById('loadingIndicator').style.display = 'none';
+            animateProgress(100);
+        }
 
         // File upload handling
         const fileUploadArea = document.getElementById('fileUploadArea');
@@ -523,7 +773,12 @@
         function displayResults(data) {
             currentJavaCode = data.java_code;
             
-            document.getElementById('javaCode').textContent = data.java_code;
+            // Update Monaco Editor with the generated Java code
+            if (javaEditor) {
+                javaEditor.setValue(data.java_code);
+                javaEditor.getAction('editor.action.formatDocument').run();
+            }
+            
             document.getElementById('codeOutput').style.display = 'block';
             
             // Update stats
@@ -533,20 +788,173 @@
                 <span><i class="fas fa-cog"></i> ${stats.api_provider}</span>
                 ${stats.failed_conversions > 0 ? `<span style="color: #dc3545;"><i class="fas fa-exclamation-triangle"></i> ${stats.failed_conversions} failed</span>` : ''}
             `;
-
-            // Trigger syntax highlighting
-            Prism.highlightAll();
         }
 
         function copyCode() {
-            navigator.clipboard.writeText(currentJavaCode).then(() => {
-                const btn = document.querySelector('.copy-btn');
-                const originalText = btn.innerHTML;
-                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                setTimeout(() => {
-                    btn.innerHTML = originalText;
-                }, 2000);
+            if (javaEditor) {
+                const code = javaEditor.getValue();
+                navigator.clipboard.writeText(code).then(() => {
+                    const btn = document.querySelector('.copy-btn');
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                    }, 2000);
+                });
+            }
+        }
+
+        function cleanupCode() {
+            if (!currentJavaCode) return;
+
+            showLoading();
+            clearMessages();
+
+            fetch('/api/cleanup-java', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: currentJavaCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    showSuccess('Java code cleaned up successfully!');
+                    currentJavaCode = data.cleaned_code;
+                    if (javaEditor) {
+                        javaEditor.setValue(data.cleaned_code);
+                        javaEditor.getAction('editor.action.formatDocument').run();
+                    }
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('Cleanup failed: ' + error.message);
             });
+        }
+
+        function compileCode() {
+            if (!currentJavaCode) return;
+
+            showLoading();
+            clearMessages();
+
+            fetch('/api/compile', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ code: currentJavaCode })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showSuccess(`Compilation successful! Generated ${data.class_name}.class`);
+                    showAnalysisModal('Compilation Results', formatCompilationResults(data));
+                } else {
+                    showError('Compilation failed: ' + data.error);
+                    if (data.details) {
+                        showAnalysisModal('Compilation Errors', formatCompilationErrors(data));
+                    }
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('Compilation request failed: ' + error.message);
+            });
+        }
+
+        function runCode() {
+            if (!currentJavaCode) return;
+            
+            // Show input modal for user to provide program input
+            document.getElementById('inputModal').style.display = 'block';
+            
+            // Focus on the input editor
+            if (inputEditor) {
+                inputEditor.focus();
+            }
+        }
+
+        function executeWithInput() {
+            const programInput = inputEditor ? inputEditor.getValue() : 'John Doe\n1000\n2000\n3000\nNO\n';
+            
+            closeInputModal();
+            showLoading();
+            clearMessages();
+
+            fetch('/api/run-java', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    code: currentJavaCode,
+                    input: programInput
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                if (data.success) {
+                    showSuccess('Program executed successfully!');
+                    displayExecutionResults(data);
+                } else {
+                    showError('Execution failed: ' + data.error);
+                    if (data.details) {
+                        showAnalysisModal('Execution Errors', formatExecutionErrors(data));
+                    }
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                showError('Execution request failed: ' + error.message);
+            });
+        }
+
+        function closeInputModal() {
+            document.getElementById('inputModal').style.display = 'none';
+        }
+
+        function displayExecutionResults(data) {
+            let resultsSection = document.getElementById('executionResults');
+            if (!resultsSection) {
+                resultsSection = document.createElement('div');
+                resultsSection.id = 'executionResults';
+                resultsSection.style.cssText = `
+                    margin-top: 20px;
+                    padding: 20px;
+                    background: #f8f9fa;
+                    border-radius: 10px;
+                    border-left: 4px solid #17a2b8;
+                `;
+                document.getElementById('codeOutput').appendChild(resultsSection);
+            }
+
+            resultsSection.innerHTML = `
+                <h4 style="color: #17a2b8; margin-bottom: 15px;">
+                    <i class="fas fa-play-circle"></i> Execution Results
+                </h4>
+                <div style="background: white; padding: 15px; border-radius: 8px; border: 1px solid #dee2e6;">
+                    <h5 style="color: #495057; margin-bottom: 10px;">
+                        <i class="fas fa-desktop"></i> Program Output:
+                    </h5>
+                    <pre style="background: #f8f9fa; padding: 10px; border-radius: 4px; margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace;">${data.output || 'No output generated'}</pre>
+                    ${data.error_output ? `
+                    <h5 style="color: #dc3545; margin: 15px 0 10px 0;">
+                        <i class="fas fa-exclamation-triangle"></i> Error Output:
+                    </h5>
+                    <pre style="background: #f8d7da; padding: 10px; border-radius: 4px; margin: 0; white-space: pre-wrap; font-family: 'Courier New', monospace; color: #721c24;">${data.error_output}</pre>
+                    ` : ''}
+                </div>
+            `;
+
+            resultsSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         function analyzeCode() {
@@ -706,6 +1114,92 @@
             return html;
         }
 
+        function formatCompilationResults(data) {
+            return `<div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-check-circle" style="font-size: 3rem; color: #28a745; margin-bottom: 15px;"></i>
+                    <h3 style="color: #28a745;">Compilation Successful!</h3>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4><i class="fas fa-info-circle"></i> Compilation Details</h4>
+                    <p><strong>Class Name:</strong> ${data.class_name}</p>
+                    <p><strong>Class File:</strong> ${data.class_name}.class</p>
+                    <p><strong>Run Command:</strong> <code>${data.run_command}</code></p>
+                </div>
+                
+                <div style="background: #d4edda; padding: 15px; border-radius: 8px; text-align: center;">
+                    <strong>✅ Your Java code is syntactically correct and ready to run!</strong>
+                </div>
+            </div>`;
+        }
+
+        function formatCompilationErrors(data) {
+            return `<div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-times-circle" style="font-size: 3rem; color: #dc3545; margin-bottom: 15px;"></i>
+                    <h3 style="color: #dc3545;">Compilation Failed</h3>
+                </div>
+                
+                <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Error Details</h4>
+                    <pre style="background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${data.details}</pre>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
+                    <h4><i class="fas fa-lightbulb"></i> Suggestions</h4>
+                    <ul>
+                        ${data.suggestions.map(suggestion => `<li>${suggestion}</li>`).join('')}
+                    </ul>
+                </div>
+            </div>`;
+        }
+
+        function formatExecutionResults(data) {
+            return `<div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-play-circle" style="font-size: 3rem; color: #17a2b8; margin-bottom: 15px;"></i>
+                    <h3 style="color: #17a2b8;">Program Executed Successfully!</h3>
+                </div>
+                
+                <div style="background: #d1ecf1; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4><i class="fas fa-desktop"></i> Program Output</h4>
+                    <pre style="background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${data.output || 'No output generated'}</pre>
+                </div>
+                
+                ${data.error_output ? `
+                <div style="background: #f8d7da; padding: 15px; border-radius: 8px;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Error Output</h4>
+                    <pre style="background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${data.error_output}</pre>
+                </div>
+                ` : ''}
+            </div>`;
+        }
+
+        function formatExecutionErrors(data) {
+            return `<div>
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <i class="fas fa-times-circle" style="font-size: 3rem; color: #dc3545; margin-bottom: 15px;"></i>
+                    <h3 style="color: #dc3545;">Execution Failed</h3>
+                </div>
+                
+                <div style="background: #f8d7da; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Error Details</h4>
+                    <pre style="background: #fff; padding: 10px; border-radius: 4px; overflow-x: auto;">${data.details}</pre>
+                </div>
+                
+                <div style="background: #fff3cd; padding: 15px; border-radius: 8px;">
+                    <h4><i class="fas fa-lightbulb"></i> Troubleshooting</h4>
+                    <ul>
+                        <li>Check if the Java code compiles successfully first</li>
+                        <li>Verify that the main method is properly defined</li>
+                        <li>Ensure all required input is provided</li>
+                        <li>Try using the "Clean Up Java" feature to fix structural issues</li>
+                    </ul>
+                </div>
+            </div>`;
+        }
+
         function showAnalysisModal(title, content) {
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalBody').innerHTML = content;
@@ -727,10 +1221,12 @@
         }
 
         function showError(message) {
+            showNotification(message, 'error');
             document.getElementById('errorMessage').innerHTML = `<div class="error"><i class="fas fa-exclamation-circle"></i> ${message}</div>`;
         }
 
         function showSuccess(message) {
+            showNotification(message, 'success');
             document.getElementById('successMessage').innerHTML = `<div class="success"><i class="fas fa-check-circle"></i> ${message}</div>`;
         }
 

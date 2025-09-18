@@ -4,7 +4,7 @@ Legacy Lift AI - Web Application
 COBOL to Java Conversion Service
 """
 
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, request, jsonify, render_template, send_from_directory, redirect, url_for
 from werkzeug.utils import secure_filename
 import os
 import json
@@ -14,10 +14,8 @@ from pathlib import Path
 import subprocess
 import sys
 
-# Import existing conversion modules
-from ast_chunker import ASTChunker
-from free_api_converter import FreeAPIConverter
-from cobol_ast_parser import parse_cobol_file_to_ast
+# Import the updated direct conversion module
+from ast_to_java_converter import convert_cobol_to_java
 
 app = Flask(__name__)
 app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB max file size
@@ -40,49 +38,63 @@ class COBOLProcessor:
     def __init__(self):
         self.temp_dir = None
         
-    def process_cobol_file(self, file_path, api_provider='groq'):
-        """Process COBOL file through the complete pipeline"""
+    def process_cobol_file(self, file_path, api_provider='gemini'):
+        """Process COBOL file using direct Gemini API conversion"""
         try:
-            # Step 1: Parse COBOL to AST first
+            # Check if Gemini API key is available
+            if not os.getenv("GEMINI_API_KEY"):
+                return {'error': 'GEMINI_API_KEY environment variable is required. Please set your Gemini API key.'}
+            
+            # Read the COBOL file
+            with open(file_path, 'r', encoding='utf-8') as f:
+                cobol_code = f.read()
+            
+            if not cobol_code.strip():
+                return {'error': 'COBOL file is empty'}
+            
+            # Extract program name from file
             base_name = Path(file_path).stem
-            ast_output_file = f"output/{base_name}_ast.json"
             
-            # Generate AST and save to file
-            parse_cobol_file_to_ast(file_path, output_format="json", save_to_file=ast_output_file)
+            # Convert COBOL to Java using direct Gemini API
+            java_code = convert_cobol_to_java(cobol_code, base_name)
             
-            if not os.path.exists(ast_output_file):
-                return {'error': 'Failed to parse COBOL file to AST'}
+            # Check if conversion was successful
+            if java_code.startswith('Error'):
+                return {'error': java_code}
             
-            # Step 2: Create chunks from AST
-            chunker = ASTChunker(ast_output_file)
-            result = chunker.chunk_ast()
+            # Save the generated Java code
+            java_file_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{base_name}.java")
+            with open(java_file_path, 'w', encoding='utf-8') as f:
+                f.write(java_code)
             
-            if not result or 'manifest_file' not in result:
-                return {'error': 'Failed to parse COBOL file'}
-            
-            manifest_file = result['manifest_file']
-            
-            # Step 3: Convert chunks to Java using LLM
-            converter = FreeAPIConverter(api_provider=api_provider)
-            conversion_result = converter.convert_from_manifest(manifest_file)
-            
-            if not conversion_result or 'combined_java_file' not in conversion_result:
-                return {'error': 'Failed to convert to Java'}
-            
-            # Step 4: Read the generated Java code
-            java_file = conversion_result['combined_java_file']
-            with open(java_file, 'r', encoding='utf-8') as f:
-                java_code = f.read()
+            # Analyze the COBOL code to provide stats
+            cobol_lines = cobol_code.split('\n')
+            divisions_found = []
+            for line in cobol_lines:
+                line = line.strip().upper()
+                if 'IDENTIFICATION DIVISION' in line:
+                    divisions_found.append('Identification')
+                elif 'ENVIRONMENT DIVISION' in line:
+                    divisions_found.append('Environment')
+                elif 'DATA DIVISION' in line:
+                    divisions_found.append('Data')
+                elif 'PROCEDURE DIVISION' in line:
+                    divisions_found.append('Procedure')
             
             return {
                 'success': True,
                 'java_code': java_code,
-                'ast_data': result.get('ast_data', {}),
-                'chunks': conversion_result.get('converted_divisions', []),
+                'java_file_path': java_file_path,
+                'cobol_analysis': {
+                    'total_lines': len(cobol_lines),
+                    'divisions_found': divisions_found,
+                    'program_name': base_name
+                },
                 'stats': {
-                    'divisions_converted': len(conversion_result.get('converted_divisions', [])),
-                    'failed_conversions': len(conversion_result.get('failed_conversions', [])),
-                    'api_provider': api_provider
+                    'divisions_converted': len(divisions_found) if divisions_found else 1,
+                    'failed_conversions': 0,
+                    'api_provider': 'gemini',
+                    'conversion_method': 'direct_api'
                 }
             }
             
@@ -92,44 +104,285 @@ class COBOLProcessor:
 processor = COBOLProcessor()
 
 @app.route('/')
+def home():
+    return render_template('home.html')
+
+@app.route('/converter')
+def converter():
+    return render_template('converter.html')
+
+@app.route('/index')
 def index():
-    return render_template('index.html')
+    # Redirect old index route to converter for backward compatibility
+    return redirect('/converter')
 
 @app.route('/api/upload', methods=['POST'])
 def upload_file():
-    """Handle COBOL file upload and processing"""
+    """Handle COBOL file upload and direct Gemini conversion"""
     try:
+        print("🔍 Upload endpoint called")
+        
         if 'file' not in request.files:
+            print("❌ No file in request")
             return jsonify({'error': 'No file provided'}), 400
         
         file = request.files['file']
         if file.filename == '':
+            print("❌ Empty filename")
             return jsonify({'error': 'No file selected'}), 400
         
         if not allowed_file(file.filename):
+            print(f"❌ Invalid file type: {file.filename}")
             return jsonify({'error': 'Invalid file type. Please upload a COBOL file (.cobol, .cob, .cbl, .txt)'}), 400
         
-        # Save uploaded file
-        filename = secure_filename(file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        file.save(file_path)
+        # Check if Gemini API key is available
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            print("❌ No GEMINI_API_KEY found in environment")
+            return jsonify({'error': 'GEMINI_API_KEY environment variable is required. Please set your Gemini API key in .env file'}), 400
         
-        # Get API provider from request
-        api_provider = request.form.get('api_provider', 'groq')
+        print(f"✅ API key found: {api_key[:10]}...")
         
-        # Process the file
-        result = processor.process_cobol_file(file_path, api_provider)
+        # Read COBOL code directly from uploaded file
+        cobol_code = file.read().decode('utf-8')
+        print(f"📄 COBOL code read: {len(cobol_code)} characters")
         
-        # Clean up uploaded file
-        os.remove(file_path)
+        if not cobol_code.strip():
+            print("❌ COBOL file is empty")
+            return jsonify({'error': 'COBOL file is empty'}), 400
         
-        if 'error' in result:
-            return jsonify(result), 500
+        # Extract program name from filename
+        program_name = Path(file.filename).stem
+        print(f"🏷️ Program name: {program_name}")
         
+        # Convert COBOL to Java using direct Gemini API
+        print("🤖 Starting Gemini API conversion...")
+        from ast_to_java_converter import convert_cobol_to_java
+        java_code = convert_cobol_to_java(cobol_code, program_name)
+        print(f"✅ Conversion completed: {len(java_code)} characters")
+        
+        # Check if conversion was successful
+        if java_code.startswith('Error'):
+            print(f"❌ Conversion error: {java_code}")
+            return jsonify({'error': java_code}), 500
+        
+        # Save the generated Java code
+        java_file_path = os.path.join(app.config['OUTPUT_FOLDER'], f"{program_name}.java")
+        with open(java_file_path, 'w', encoding='utf-8') as f:
+            f.write(java_code)
+        print(f"💾 Java code saved to: {java_file_path}")
+        
+        result = {
+            'success': True,
+            'java_code': java_code,
+            'java_file_path': java_file_path,
+            'program_name': program_name,
+            'stats': {
+                'cobol_lines': len(cobol_code.split('\n')),
+                'java_lines': len(java_code.split('\n')),
+                'api_provider': 'gemini',
+                'conversion_method': 'direct_api'
+            }
+        }
+        
+        print("🎉 Conversion successful, returning result")
         return jsonify(result)
         
     except Exception as e:
+        print(f"💥 Exception in upload_file: {str(e)}")
+        import traceback
+        traceback.print_exc()
         return jsonify({'error': f'Upload failed: {str(e)}'}), 500
+
+@app.route('/api/compile', methods=['POST'])
+def compile_java():
+    """Compile the generated Java code"""
+    try:
+        data = request.get_json()
+        java_code = data.get('java_code', '')
+        
+        if not java_code:
+            return jsonify({'error': 'No Java code provided'}), 400
+        
+        # Create temporary directory for compilation
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Extract class name from Java code
+            class_name = "CobolProgram"
+            for line in java_code.split('\n'):
+                if 'public class ' in line:
+                    class_name = line.split('public class ')[1].split(' ')[0].split('{')[0].strip()
+                    break
+            
+            # Write Java code to file
+            java_file = os.path.join(temp_dir, f"{class_name}.java")
+            with open(java_file, 'w', encoding='utf-8') as f:
+                f.write(java_code)
+            
+            # Compile Java code
+            try:
+                result = subprocess.run(
+                    ['javac', java_file],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=temp_dir
+                )
+                
+                if result.returncode == 0:
+                    # Compilation successful
+                    class_file = os.path.join(temp_dir, f"{class_name}.class")
+                    return jsonify({
+                        'success': True,
+                        'message': 'Java code compiled successfully!',
+                        'class_name': class_name,
+                        'class_file_exists': os.path.exists(class_file),
+                        'run_command': f"java {class_name}"
+                    })
+                else:
+                    # Compilation failed
+                    return jsonify({
+                        'success': False,
+                        'error': 'Compilation failed',
+                        'details': result.stderr,
+                        'suggestions': [
+                            'Check for syntax errors in the generated code',
+                            'Ensure all imports are correct',
+                            'Verify class and method declarations',
+                            'Try using the "Clean Up Java" feature first'
+                        ]
+                    })
+                    
+            except subprocess.TimeoutExpired:
+                return jsonify({'error': 'Compilation timed out'}), 500
+            except FileNotFoundError:
+                return jsonify({'error': 'Java compiler (javac) not found. Please install Java Development Kit (JDK).'}), 500
+        
+    except Exception as e:
+        return jsonify({'error': f'Compilation failed: {str(e)}'}), 500
+
+@app.route('/api/cleanup-java', methods=['POST'])
+def cleanup_java():
+    """Clean up Java code using Gemini API"""
+    try:
+        data = request.get_json()
+        java_code = data.get('java_code', '')
+        
+        if not java_code:
+            return jsonify({'error': 'No Java code provided'}), 400
+        
+        # Check if Gemini API key is available
+        if not os.getenv("GEMINI_API_KEY"):
+            return jsonify({'error': 'GEMINI_API_KEY environment variable is required'}), 500
+        
+        # Use Gemini to clean up the Java code
+        from ast_to_java_converter import CobolToJavaConverter
+        
+        cleanup_prompt = f"""
+Clean up and fix the following Java code to make it compilable and well-structured:
+
+Issues to fix:
+1. Remove duplicate class definitions
+2. Consolidate imports at the top
+3. Remove empty or unnecessary classes
+4. Fix package declarations
+5. Ensure proper Java syntax
+6. Remove any scattered import statements
+7. Consolidate multiple main methods if present
+
+Java Code to Clean:
+```java
+{java_code}
+```
+
+Return only the cleaned Java code without any explanations or markdown formatting.
+"""
+        
+        try:
+            converter = CobolToJavaConverter()
+            cleaned_code = converter._call_gemini_api(cleanup_prompt)
+            
+            if cleaned_code:
+                cleaned_code = converter._clean_java_response(cleaned_code)
+                return jsonify({
+                    'success': True,
+                    'cleaned_code': cleaned_code
+                })
+            else:
+                return jsonify({'error': 'Failed to clean up Java code using Gemini API'}), 500
+                
+        except Exception as e:
+            return jsonify({'error': f'Cleanup failed: {str(e)}'}), 500
+        
+    except Exception as e:
+        return jsonify({'error': f'Cleanup request failed: {str(e)}'}), 500
+
+@app.route('/api/run-java', methods=['POST'])
+def run_java():
+    """Execute the compiled Java program"""
+    try:
+        data = request.get_json()
+        java_code = data.get('java_code', '')
+        program_input = data.get('input', 'John Doe\n1000\n2000\n3000\nNO\n')
+        
+        if not java_code:
+            return jsonify({'error': 'No Java code provided'}), 400
+        
+        # Create temporary directory for execution
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Extract class name from Java code
+            class_name = "CobolProgram"
+            for line in java_code.split('\n'):
+                if 'public class ' in line:
+                    class_name = line.split('public class ')[1].split(' ')[0].split('{')[0].strip()
+                    break
+            
+            # Write Java code to file
+            java_file = os.path.join(temp_dir, f"{class_name}.java")
+            with open(java_file, 'w', encoding='utf-8') as f:
+                f.write(java_code)
+            
+            try:
+                # Compile first
+                compile_result = subprocess.run(
+                    ['javac', java_file],
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=temp_dir
+                )
+                
+                if compile_result.returncode != 0:
+                    return jsonify({
+                        'success': False,
+                        'error': 'Compilation failed before execution',
+                        'details': compile_result.stderr
+                    })
+                
+                # Run the program
+                run_result = subprocess.run(
+                    ['java', class_name],
+                    input=program_input,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                    cwd=temp_dir
+                )
+                
+                return jsonify({
+                    'success': True,
+                    'return_code': run_result.returncode,
+                    'output': run_result.stdout,
+                    'error_output': run_result.stderr,
+                    'input_provided': program_input
+                })
+                
+            except subprocess.TimeoutExpired:
+                return jsonify({'error': 'Program execution timed out'}), 500
+            except FileNotFoundError:
+                return jsonify({'error': 'Java runtime not found. Please install Java.'}), 500
+        
+    except Exception as e:
+        return jsonify({'error': f'Execution failed: {str(e)}'}), 500
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze_code():
@@ -260,6 +513,14 @@ def too_large(e):
 @app.errorhandler(500)
 def internal_error(e):
     return jsonify({'error': 'Internal server error'}), 500
+
+# Disable caching for development
+@app.after_request
+def after_request(response):
+    response.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    response.headers["Pragma"] = "no-cache"
+    response.headers["Expires"] = "0"
+    return response
 
 if __name__ == '__main__':
     print("🚀 Legacy Lift AI Web Application Starting...")

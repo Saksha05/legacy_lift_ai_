@@ -36,10 +36,11 @@ class FreeAPIConverter:
                 "headers": {"Authorization": f"Bearer {self.api_key}"} if self.api_key else {},
                 "model": "microsoft/DialoGPT-medium"
             },
-<<<<<<< HEAD
-=======
- 
->>>>>>> parent of 4a82710 (monaco editor)
+            "gemini": {
+                "url": "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent",
+                "headers": {"Content-Type": "application/json"} if self.api_key else {},
+                "model": "gemini-1.5-flash"
+            },
             "together": {
                 "url": "https://api.together.xyz/v1/chat/completions",
                 "headers": {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"} if self.api_key else {},
@@ -350,11 +351,45 @@ public static void main(String[] args) {
         except Exception as e:
             print(f"OpenRouter error: {e}")
             return None
+
+    def call_gemini_api(self, prompt: str) -> Optional[str]:
+        """Call Google Gemini API"""
+        config = self.api_configs["gemini"]
+        url = f"{config['url']}?key={self.api_key}"
+        payload = {
+            "contents": [{
+                "parts": [{
+                    "text": prompt
+                }]
+            }]
+        }
+        try:
+            response = requests.post(
+                url,
+                headers=config["headers"],
+                json=payload,
+                timeout=60,
+                verify=False
+            )
+            if response.status_code == 200:
+                result = response.json()
+                if "candidates" in result and len(result["candidates"]) > 0:
+                    return result["candidates"][0]["content"]["parts"][0]["text"]
+                return None
+            else:
+                print(f"Gemini API error: {response.status_code}")
+                print(f"Response: {response.text}")
+                return None
+        except Exception as e:
+            print(f"Gemini error: {e}")
+            return None
     
     def call_api(self, prompt: str) -> Optional[str]:
         """Call the selected API provider"""
         if self.api_provider == "huggingface":
             return self.call_huggingface_api(prompt)
+        elif self.api_provider == "gemini":
+            return self.call_gemini_api(prompt)
         elif self.api_provider == "together":
             return self.call_together_api(prompt)
         elif self.api_provider == "openrouter":
@@ -475,11 +510,7 @@ def main():
     import sys
     
     print("🆓 Free API LLM Converter")
-<<<<<<< HEAD
     print("Available providers: huggingface, together, openrouter, gemini")
-=======
-    print("Available providers: huggingface, groq, together, openrouter")
->>>>>>> parent of 4a82710 (monaco editor)
     print("Note: Some providers require API keys for better performance\n")
     
     if len(sys.argv) < 2:
